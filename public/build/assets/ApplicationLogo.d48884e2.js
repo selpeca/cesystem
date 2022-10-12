@@ -1,0 +1,1 @@
+import{a as i}from"./app.e55d2132.js";function r({className:a}){return i("img",{src:"https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Logo_de_la_Universidad_de_La_Guajira.svg/1200px-Logo_de_la_Universidad_de_La_Guajira.svg.png",className:a,alt:"Logo Uniguajira"})}export{r as A};

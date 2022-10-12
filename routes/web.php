@@ -23,9 +23,9 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::withoutMiddleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
+    Route::resource('generales', 'App\Http\Controllers\MasterController')->name('generales');
+});
 
 require __DIR__.'/auth.php';
