@@ -37,8 +37,8 @@ export default function Welcome(props) {
                             <div className="p-6">
                                 <div className="flex items-center">
                                     <svg className="w-8 h-8 text-gray-500" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                                        <polygon fill="var(--ci-primary-color, currentColor)" points="376 160 376 192 441.372 192 252 381.373 180 309.373 76.686 412.686 99.314 435.314 180 354.627 252 426.627 464 214.628 464 280 496 280 496 160 376 160" class="ci-primary"/>
-                                        <polygon fill="var(--ci-primary-color, currentColor)" points="48 104 16 104 16 496 496 496 496 464 48 464 48 104" class="ci-primary"/>
+                                        <polygon fill="var(--ci-primary-color, currentColor)" points="376 160 376 192 441.372 192 252 381.373 180 309.373 76.686 412.686 99.314 435.314 180 354.627 252 426.627 464 214.628 464 280 496 280 496 160 376 160" className="ci-primary"/>
+                                        <polygon fill="var(--ci-primary-color, currentColor)" points="48 104 16 104 16 496 496 496 496 464 48 464 48 104" className="ci-primary"/>
                                     </svg>
                                     <div className="ml-4 text-lg leading-7 font-semibold">
                                         <a
