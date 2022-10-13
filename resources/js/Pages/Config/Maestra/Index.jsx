@@ -1,33 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
     faPlus
 } from '@fortawesome/free-solid-svg-icons'
 import { Link, Head } from '@inertiajs/inertia-react';
-const Padres = [
-    {  
-        "id": 1,
-        "key": "tipid",
-        "value": "TIPOS DE IDENTIFICACIÓN"
-    },
-    {  
-        "id": 2,
-        "key": "tipid",
-        "value": "CIUDADES"
-    },
-    {  
-        "id": 3,
-        "key": "tipid",
-        "value": "ESTADOS"
-    },
-]
+// const Padres = [
+//     {  
+//         "id": 1,
+//         "key": "tipid",
+//         "value": "TIPOS DE IDENTIFICACIÓN"
+//     },
+//     {  
+//         "id": 2,
+//         "key": "tipid",
+//         "value": "CIUDADES"
+//     },
+//     {  
+//         "id": 3,
+//         "key": "tipid",
+//         "value": "ESTADOS"
+//     },
+// ]
 
 const verListado = (id) =>{
     console.log(id);
 }
 
-export default function Index({ auth }) {
+export default function Index({ auth, padres }) {
+    
+    // const [padres, setPadres] = useState(padres);
+
     return (
         <AuthenticatedLayout auth={auth}
             header={
@@ -58,18 +61,14 @@ export default function Index({ auth }) {
                                 <div className="flex justify-center items-center">
                                     <FontAwesomeIcon icon={faPlus} className='text-gray-700' />
                                 </div>
-                                {/* 
-                                    lista
-                                */}
-
                                 {
-                                    Padres.map((padre,index) => {
+                                    padres.map((padre,index) => {
                                         return (
                                             <div 
                                                 key={index} 
                                                 onClick={e => verListado(padre.id)}
                                                 className="flex justify-between items-center pt-4 hover:text-gray-800 cursor-pointer">
-                                                <div>{padre.value}</div>
+                                                <div>{padre.name}</div>
                                             </div>
                                         )
                                     })

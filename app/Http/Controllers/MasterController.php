@@ -10,7 +10,10 @@ class MasterController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Config/Maestra/Index', []);
+
+        return Inertia::render('Config/Maestra/Index', [
+            'padres' => Master::whereNull('parent_id')->latest()->get(),
+        ]);
     }
 
     public function store(Request $request)
