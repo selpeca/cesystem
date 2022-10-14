@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\{
-    MasterController
+    MasterController,
+    UserController,
 };
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,8 @@ Route::withoutMiddleware(['auth', 'verified'])->group(function () {
     Route::get('/generales', function () {return Inertia::render('Config/Index');})->name('generales');
     Route::prefix('generales')->group(function () {
         Route::resource('maestra', MasterController::class)->only(['index', 'store']);
+
+        Route::resource('usuario', UserController::class)->only(['index', 'show']);
     });
 });
 
