@@ -162,7 +162,7 @@ const TrTipo = ({datos}) => {
     };
     return (
         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-        {
+        {/* {
             Object.entries(values).map( ([key, value]) => {
                 return (
                     <td key={key} scope="row" className="py-3 px-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -181,8 +181,22 @@ const TrTipo = ({datos}) => {
                 </td>)
                 
             })
-        }
-            {/* <td className="py-3 px-1">
+        } */}
+        <td className="py-3 px-1">
+                {
+                    editing ?
+                    <TextInput
+                        name="name"
+                        value={values.name}
+                        className="block text-sm"
+                        isFocused={true}
+                        handleChange={onHandleChange}
+                    />
+                    :
+                    values.name
+                }
+            </td>
+            <td className="py-3 px-1">
                 {
                     editing ?
                     <TextInput
@@ -251,7 +265,7 @@ const TrTipo = ({datos}) => {
                     :
                     values.hierarchy_second_id
                 }
-            </td> */}
+            </td>
             <td className="py-3 px-1">
                 {
                     editing ?
