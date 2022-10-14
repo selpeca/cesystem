@@ -67,7 +67,7 @@ class Person extends Model
      */
     public function tipoidentificacion()
     {
-        return $this->hasOne('App\Models\Cfmaestras', 'id', 'tipoidentificacion_id');
+        return $this->hasOne('App\Models\Master', 'id', 'tipoidentificacion_id');
     }
 
     /**
@@ -75,22 +75,22 @@ class Person extends Model
      */
     public function sexo()
     {
-        return $this->hasOne('App\Models\Cfmaestras', 'id', 'sexo_id');
+        return $this->hasOne('App\Models\Master', 'id', 'sexo_id');
     }
 
     public function ocupacion()
     {
-        return $this->hasOne('App\Models\Cfmaestras', 'id', 'ocupacion_id');
+        return $this->hasOne('App\Models\Master', 'id', 'ocupacion_id');
     }
 
     public function departamento()
     {
-        return $this->hasOne('App\Models\Cfmaestras', 'id', 'departamento_id');
+        return $this->hasOne('App\Models\Master', 'id', 'departamento_id');
     }
 
     public function ciudad()
     {
-        return $this->hasOne('App\Models\Cfmaestras', 'id', 'ciudad_id');
+        return $this->hasOne('App\Models\Master', 'id', 'ciudad_id');
     }
 
 }
