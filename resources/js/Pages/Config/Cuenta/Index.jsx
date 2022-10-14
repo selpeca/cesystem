@@ -19,7 +19,7 @@ export default function Index({ auth, usuario }) {
                 <ol className="inline-flex items-center space-x-1 md:space-x-3">
                     <li className="inline-flex items-center">
                         <Link href={route('generales')} className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-                            Generaless
+                            Generales
                         </Link>
                     </li>
                     <li aria-current="page">
