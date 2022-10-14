@@ -27,8 +27,11 @@ Route::get('/', function () {
 });
 Route::withoutMiddleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {return Inertia::render('Dashboard');})->name('dashboard');
+
     Route::get('/generales', function () {return Inertia::render('Config/Index');})->name('generales');
-    Route::resource('master', MasterController::class)->only(['index', 'store']);
+    Route::prefix('generales')->group(function () {
+        Route::resource('maestra', MasterController::class)->only(['index', 'store']);
+    });
 });
 
 require __DIR__.'/auth.php';

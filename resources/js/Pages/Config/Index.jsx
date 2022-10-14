@@ -19,7 +19,7 @@ export default function Index({ auth }) {
                     <div className="overflow-hidden sm:rounded-lg">
                         <ul className='col-span-3 grid grid-cols-1 gap-y-6 gap-x-6 sm:grid-cols-2 sm:gap-y-10 md:grid-cols-3 xl:gap-x-8'>
                             <li>
-                                <Link href={ route('master.index') }>
+                                <Link href={ route('maestra.index') }>
                                     <div className='group relative before:absolute before:-inset-2.5 before:rounded-[20px] before:bg-gray-50 before:opacity-0 hover:before:opacity-100 p-4'>
                                         <div className='relative overflow-hidden flex justify-center items-center'>
                                             <FontAwesomeIcon icon={faGears} className='text-2xl font-bold' />
