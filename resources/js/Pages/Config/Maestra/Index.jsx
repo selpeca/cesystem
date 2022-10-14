@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Modal from '@/Components/Modal';
+import TextInput from '@/Components/TextInput';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useForm } from '@inertiajs/inertia-react';
 import { 
-    faPlus
+    faPlus,
+    faPen,
+    faCheck
 } from '@fortawesome/free-solid-svg-icons'
 import { Link, Head } from '@inertiajs/inertia-react';
 
@@ -61,7 +65,7 @@ export default function Index({ auth, padres }) {
                                     icon={faPlus} 
                                     className='text-gray-700 cursor-pointer'
                                     onClick={() => setShowModal(true)}
-                                />
+                                    />
                                 </div>
                                 {
                                     padres.map((padre,index) => {
@@ -100,30 +104,20 @@ export default function Index({ auth, padres }) {
                                         <table className="w-full py-3 text-sm text-left text-gray-500 dark:text-gray-400">
                                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                                 <tr>
-                                                    <th scope="col" className="py-3 px-6">
-                                                        Nombre
-                                                    </th>
-                                                    <th scope="col" className="py-3 px-6">
-                                                        Clave
-                                                    </th>
-                                                    <th scope="col" className="py-3 px-6">
-                                                        Valor
-                                                    </th>
-                                                    <th scope="col" className="py-3 px-6">
-                                                        Jerarquía
-                                                    </th>
-                                                    <th scope="col" className="py-3 px-6">
-                                                        Jerarquía secundaria
-                                                    </th>
-                                                    <th scope="col" className="py-3 px-6">
-                                                        Descripción
-                                                    </th>                                                
+                                                    <th scope="col" className="py-3 px-6">Nombre</th>
+                                                    <th scope="col" className="py-3 px-6">Clave</th>
+                                                    <th scope="col" className="py-3 px-6">Valor</th>
+                                                    <th scope="col" className="py-3 px-6">Jerarquía</th>
+                                                    <th scope="col" className="py-3 px-6">Jerarquía secundaria</th>
+                                                    <th scope="col" className="py-3 px-6">Descripción</th>                                                
+                                                    <th scope="col" className="py-3 px-6">...</th>                                                
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {
                                                     tipos.map((item,index) =>{
-                                                        return (
+                                                        return <TrTipo key={index} datos={item} />
+                                                        {/* (
                                                             <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                                                 <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                                     {item.name}
@@ -133,8 +127,15 @@ export default function Index({ auth, padres }) {
                                                                 <td className="py-4 px-6">{item.hierarchy_id}</td>
                                                                 <td className="py-4 px-6">{item.hierarchy_second_id}</td>
                                                                 <td className="py-4 px-6">{item.description}</td>
+                                                                <td className="py-4 px-6">
+                                                                    <FontAwesomeIcon 
+                                                                    icon={faPen} 
+                                                                    className='text-gray-700 cursor-pointer'
+                                                                    // onClick={() => setShowModal(true)}
+                                                                    />
+                                                                </td>
                                                             </tr>
-                                                        )
+                                                        ) */}
                                                     })
                                                 }
                                             </tbody>
@@ -151,4 +152,122 @@ export default function Index({ auth, padres }) {
             </div>
         </AuthenticatedLayout>
     );
+}
+
+const TrTipo = ({datos}) => {
+    const [editing, setEditing] = useState(false);
+    const [values, setValues] = useState(datos);
+    const onHandleChange = (event) => {
+        setValues(event.target.name, event.target.value);
+    };
+    return (
+        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+        {
+            Object.entries(values).map( ([key, value]) => {
+                return (
+                    <td key={key} scope="row" className="py-3 px-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {
+                        editing ?
+                        <TextInput
+                            name={value}
+                            value={value}
+                            className="block text-sm"
+                            isFocused={true}
+                            handleChange={onHandleChange}
+                        />
+                        :
+                        value
+                    }
+                </td>)
+                
+            })
+        }
+            {/* <td className="py-3 px-1">
+                {
+                    editing ?
+                    <TextInput
+                        name="key"
+                        value={values.key}
+                        className="block text-sm"
+                        isFocused={true}
+                        handleChange={onHandleChange}
+                    />
+                    :
+                    values.key
+                }
+            </td>
+            <td className="py-3 px-1">
+                {
+                    editing ?
+                    <TextInput
+                        name="value"
+                        value={values.value}
+                        className="block text-sm"
+                        isFocused={true}
+                        handleChange={onHandleChange}
+                    />
+                    :
+                    values.value
+                }
+            </td>
+            <td className="py-3 px-1">
+                {
+                    editing ?
+                    <TextInput
+                        name="key"
+                        value={values.key}
+                        className="block text-sm"
+                        isFocused={true}
+                        handleChange={onHandleChange}
+                    />
+                    :
+                    values.key
+                }
+            </td>
+            <td className="py-3 px-1">
+                {
+                    editing ?
+                    <TextInput
+                        name="hierarchy_id"
+                        value={values.hierarchy_id}
+                        className="block text-sm"
+                        isFocused={true}
+                        handleChange={onHandleChange}
+                    />
+                    :
+                    values.hierarchy_id
+                }
+            </td>
+            <td className="py-3 px-1">
+                {
+                    editing ?
+                    <TextInput
+                        name="hierarchy_second_id"
+                        value={values.hierarchy_second_id}
+                        className="block text-sm"
+                        isFocused={true}
+                        handleChange={onHandleChange}
+                    />
+                    :
+                    values.hierarchy_second_id
+                }
+            </td> */}
+            <td className="py-3 px-1">
+                {
+                    editing ?
+                    <FontAwesomeIcon 
+                    icon={faCheck} 
+                    className='text-gray-700 cursor-pointer'
+                    onClick={() => setEditing(false)}
+                    />
+                    :
+                    <FontAwesomeIcon 
+                    icon={faPen} 
+                    className='text-gray-700 cursor-pointer'
+                    onClick={() => setEditing(true)}
+                    />
+                }
+            </td>
+        </tr>
+    )
 }
