@@ -1,34 +1,67 @@
 import React, { useState, useEffect } from 'react';
+import { Link, Head, useForm } from '@inertiajs/inertia-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Modal from '@/Components/Modal';
 import TextInput from '@/Components/TextInput';
+import InputLabel from '@/Components/InputLabel';
+import InputError from '@/Components/InputError';
+import PrimaryButton from '@/Components/PrimaryButton';
+import SelectControl from '@/Components/SelectControl';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useForm } from '@inertiajs/inertia-react';
 import { 
     faPlus,
-    faPen,
-    faCheck
+    faPen
 } from '@fortawesome/free-solid-svg-icons'
-import { Link, Head } from '@inertiajs/inertia-react';
+
 
 export default function Index({ auth, padres }) {
     
     const [tipos, setTipos] = useState([]);
-    const [parent, setParent] = useState(0)
+    const [parent, setParent] = useState(0);
     const [showModal, setShowModal] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
+    
+    const { data, setData, post, processing, errors, reset, progress } = useForm({
+        id:null,
+        key:null,
+        name:'',
+        parent_id: parent,
+        value:'',
+        hierarchy_id:'',
+        hierarchy_second_id:'',
+        description:'',
+        is_active:''
+    });
 
     useEffect(() => {
         if (parent === 0) return;
         verListado(parent)
     }, [parent])
+
+    const onHandleChange = (event) => {
+        setData(event.target.name, event.target.value);
+    };
+
+    const submit = (e) => {
+        e.preventDefault();
+        console.log(data);
+        // post(route('api.maestra.store'),{
+        //     preserveScroll: true,
+        //     onSuccess: () => setShowModal(false) && verListado(parent),
+        // });
+    };
+
+    useEffect(() => {
+        if (!showModal) reset()
+    }, [showModal])
     
     const verListado = (id) =>{
         setIsLoading(true);
         fetch(route('api.maestra.index',id))
         .then(response => response.json())
-        .then(data => {
-            setTipos(data);
+        .then(datos => {
+            setTipos(datos);
             setIsLoading(false);
         });
     }
@@ -110,34 +143,42 @@ export default function Index({ auth, padres }) {
                                                     <th scope="col" className="py-3 px-6">Jerarquía</th>
                                                     <th scope="col" className="py-3 px-6">Jerarquía secundaria</th>
                                                     <th scope="col" className="py-3 px-6">Descripción</th>                                                
-                                                    <th scope="col" className="py-3 px-6">...</th>                                                
+                                                    <th scope="col" className="py-3 px-3">...</th>                                                
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {
-                                                    tipos.map((item,index) =>{
-                                                        return <TrTipo key={index} datos={item} />
-                                                        {/* (
-                                                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                                <th scope="row" className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                                    {item.name}
-                                                                </th>
-                                                                <td className="py-4 px-6">{item.key}</td>
-                                                                <td className="py-4 px-6">{item.value}</td>
-                                                                <td className="py-4 px-6">{item.hierarchy_id}</td>
-                                                                <td className="py-4 px-6">{item.hierarchy_second_id}</td>
-                                                                <td className="py-4 px-6">{item.description}</td>
-                                                                <td className="py-4 px-6">
-                                                                    <FontAwesomeIcon 
-                                                                    icon={faPen} 
-                                                                    className='text-gray-700 cursor-pointer'
-                                                                    // onClick={() => setShowModal(true)}
-                                                                    />
-                                                                </td>
-                                                            </tr>
-                                                        ) */}
-                                                    })
-                                                }
+                                            {
+                                                tipos.map((item,index) => (
+                                                    <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                                        <th className="py-4 px-3">{item.name}</th>
+                                                        <td className="py-4 px-3">{item.key}</td>
+                                                        <td className="py-4 px-3">{item.value}</td>
+                                                        <td className="py-4 px-3">{item.hierarchy_id}</td>
+                                                        <td className="py-4 px-3">{item.hierarchy_second_id}</td>
+                                                        <td className="py-4 px-3">{item.description}</td>
+                                                        <td className="py-4 px-3 text-right">
+                                                            <FontAwesomeIcon 
+                                                                icon={faPen} 
+                                                                className='text-gray-700 cursor-pointer'
+                                                                onClick={() => {
+                                                                        setData({
+                                                                            id: item.id,
+                                                                            key: item.key,
+                                                                            name: item.name,
+                                                                            value: item.value,
+                                                                            hierarchy_id: item.hierarchy_id,
+                                                                            hierarchy_second_id: item.hierarchy_second_id,
+                                                                            description: item.description,
+                                                                            is_active: item.is_active,
+                                                                        })
+                                                                        setShowModal(true);
+                                                                    }
+                                                                }
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            }
                                             </tbody>
                                         </table>
                                         </div>
@@ -146,142 +187,90 @@ export default function Index({ auth, padres }) {
                         </div>
                     </div>
                 </div>
-                <Modal showModal={showModal} setShowModal={setShowModal} title="Agregar categoría">
-                    
+                <Modal 
+                showModal={showModal} 
+                setShowModal={setShowModal} 
+                title="Agregar categoría"
+                width="7xl"
+                >
+                    <form className='p-4' onSubmit={submit}>
+                        <div className="grid gap-6 mb-6 md:grid-cols-1">
+                            <div>
+                                <InputLabel forInput="parent_id" value="Padre" />
+                                <SelectControl
+                                    name="parent_id"
+                                    value={parent}
+                                    className="mt-1 block w-full"
+                                    isDisabled={true}
+                                    handleChange={onHandleChange}
+                                    options={padres.map((padre) => (
+                                            {
+                                                value : padre.id,
+                                                text : padre.name,
+                                            }
+                                        ))
+                                    }
+                                />
+                            </div>
+                            <div>
+                                <InputLabel forInput="name" value="Nombre" />
+                                <TextInput
+                                    type="text"
+                                    name="name"
+                                    value={data.name}
+                                    className="mt-1 block w-full"
+                                    isFocused={true}
+                                    handleChange={onHandleChange}
+                                />
+                            </div>
+                            <div>
+                                <InputLabel forInput="key" value="Clave" />
+                                <TextInput
+                                    type="text"
+                                    name="key"
+                                    value={data.key}
+                                    className="mt-1 block w-full"
+                                    handleChange={onHandleChange}
+                                />
+                            </div>
+                            <div>
+                                <InputLabel forInput="hierarchy_id" value="Jerarquia" />
+                                <SelectControl 
+                                name="hierarchy_id"
+                                id="hierarchy_id"
+                                handleChange={onHandleChange}
+                                value={data.key}
+                                options={
+                                    [
+                                        { value:1, text:"primero"},
+                                        { value:2, text:"segundo"},
+                                        { value:3, text:"tercero"},
+                                    ]
+                                }
+                                />
+
+                            </div>
+                            {progress && (
+                                <progress value={progress.percentage} max="100">
+                                    {progress.percentage}%
+                                </progress>
+                            )}
+                        </div>
+                        <div className="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200">
+                            <PrimaryButton 
+                                processing={processing}
+                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                            >
+                                Aceptar
+                            </PrimaryButton>
+                            <button 
+                                type="button" 
+                                className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
+                                onClick={() => setShowModal(false)}>Cancelar</button>
+                        </div>
+                    </form>
                 </Modal>
             </div>
         </AuthenticatedLayout>
     );
-}
-
-const TrTipo = ({datos}) => {
-    const [editing, setEditing] = useState(false);
-    const [values, setValues] = useState(datos);
-    const onHandleChange = (event) => {
-        setValues(event.target.name, event.target.value);
-    };
-    return (
-        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-        {/* {
-            Object.entries(values).map( ([key, value]) => {
-                return (
-                    <td key={key} scope="row" className="py-3 px-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {
-                        editing ?
-                        <TextInput
-                            name={value}
-                            value={value}
-                            className="block text-sm"
-                            isFocused={true}
-                            handleChange={onHandleChange}
-                        />
-                        :
-                        value
-                    }
-                </td>)
-                
-            })
-        } */}
-        <td className="py-3 px-1">
-                {
-                    editing ?
-                    <TextInput
-                        name="name"
-                        value={values.name}
-                        className="block text-sm"
-                        isFocused={true}
-                        handleChange={onHandleChange}
-                    />
-                    :
-                    values.name
-                }
-            </td>
-            <td className="py-3 px-1">
-                {
-                    editing ?
-                    <TextInput
-                        name="key"
-                        value={values.key}
-                        className="block text-sm"
-                        isFocused={true}
-                        handleChange={onHandleChange}
-                    />
-                    :
-                    values.key
-                }
-            </td>
-            <td className="py-3 px-1">
-                {
-                    editing ?
-                    <TextInput
-                        name="value"
-                        value={values.value}
-                        className="block text-sm"
-                        isFocused={true}
-                        handleChange={onHandleChange}
-                    />
-                    :
-                    values.value
-                }
-            </td>
-            <td className="py-3 px-1">
-                {
-                    editing ?
-                    <TextInput
-                        name="key"
-                        value={values.key}
-                        className="block text-sm"
-                        isFocused={true}
-                        handleChange={onHandleChange}
-                    />
-                    :
-                    values.key
-                }
-            </td>
-            <td className="py-3 px-1">
-                {
-                    editing ?
-                    <TextInput
-                        name="hierarchy_id"
-                        value={values.hierarchy_id}
-                        className="block text-sm"
-                        isFocused={true}
-                        handleChange={onHandleChange}
-                    />
-                    :
-                    values.hierarchy_id
-                }
-            </td>
-            <td className="py-3 px-1">
-                {
-                    editing ?
-                    <TextInput
-                        name="hierarchy_second_id"
-                        value={values.hierarchy_second_id}
-                        className="block text-sm"
-                        isFocused={true}
-                        handleChange={onHandleChange}
-                    />
-                    :
-                    values.hierarchy_second_id
-                }
-            </td>
-            <td className="py-3 px-1">
-                {
-                    editing ?
-                    <FontAwesomeIcon 
-                    icon={faCheck} 
-                    className='text-gray-700 cursor-pointer'
-                    onClick={() => setEditing(false)}
-                    />
-                    :
-                    <FontAwesomeIcon 
-                    icon={faPen} 
-                    className='text-gray-700 cursor-pointer'
-                    onClick={() => setEditing(true)}
-                    />
-                }
-            </td>
-        </tr>
-    )
 }

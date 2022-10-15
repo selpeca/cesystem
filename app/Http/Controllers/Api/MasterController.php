@@ -26,7 +26,16 @@ class MasterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'string|max:255',
+            'value' => 'string|max:255',
+            'hierarchy_id' => 'integer',
+            'hierarchy_second_id' => 'integer',
+            'description' => 'string',
+            'is_active' => 'boolean',
+        ]);
+        $maestra = Master::create($validated);
+        return response()->json($maestra);
     }
 
     /**
