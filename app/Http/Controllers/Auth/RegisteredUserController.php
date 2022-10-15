@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\{User, Person};
+use App\Models\{User, Person, Master};
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -21,7 +21,14 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Auth/Register');
+
+        $tipo_documentos = Master::where('parent_id', 1)->get();
+        $tipo_sexos      = Master::where('parent_id', 9)->get();
+
+        return Inertia::render('Auth/Register', [
+            'tipo_documentos' => $tipo_documentos,
+            'tipo_sexos' => $tipo_sexos
+        ]);
     }
 
     /**
@@ -35,7 +42,7 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
 
-        return $request->all();
+        return $request;
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
