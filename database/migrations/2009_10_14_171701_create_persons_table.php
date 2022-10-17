@@ -67,6 +67,10 @@ return new class extends Migration
                                         ->on('masters')
                                         ->onDelete('cascade')
                                         ->onUpdate('cascade');  
+            $table->foreign('sexo_id')->references('id')
+                                        ->on('masters')
+                                        ->onDelete('cascade')
+                                        ->onUpdate('cascade');  
 
             $table->foreign('ciudad_id')->references('id')
                                         ->on('masters')

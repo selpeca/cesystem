@@ -23,8 +23,9 @@ class RegisteredUserController extends Controller
     {
 
         $tipo_documentos = Master::where('parent_id', 1)->get();
-        $tipo_sexos      = Master::where('parent_id', 9)->get();
+        $tipo_sexos      = Master::where('parent_id', 8)->get();
 
+        
         return Inertia::render('Auth/Register', [
             'tipo_documentos' => $tipo_documentos,
             'tipo_sexos' => $tipo_sexos
@@ -42,22 +43,33 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
 
-        return $request;
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+
+        $person = Person::create([
+            'identificacion' => $request->identificacion,
+            'tipoidentificacion_id' => $request->tipoidentificacion_id,
+            'nombre' => $request->nombre,
+            'apellido' => $request->apellido,
+            'email' => $request->email,
+            'fechanacimiento' => $request->fechanacimiento,
+            'sexo_id' => $request->sexo_id,
+        ]);
+
+        
+        $person->user()->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        event(new Registered($person->user));
 
-        Auth::login($user);
+        Auth::login($person->user);
 
         return redirect(RouteServiceProvider::HOME);
     }

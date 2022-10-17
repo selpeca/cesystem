@@ -1,48 +1,84 @@
-import React, { useEffect, useState } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import React, { useState, useEffect } from 'react';
+import { Link, Head, useForm } from '@inertiajs/inertia-react';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
+import { useNavigate, useParams } from "react-router-dom";
+import GuestLayout from '@/Layouts/GuestLayout';
 import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/inertia-react';
-import Select from 'react-select';
+import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+    faGears,
+    faUser
+} from '@fortawesome/free-solid-svg-icons'
 
-export default function Register(tipos) {
 
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-        tipoidentificacion_id: '',
-        identificacion: '',
-        nombre: '',
-        apellido: '',
-        fechanacimiento: '',
-        sexo_id: '',
+export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
+
+    const { data, setData, put, processing, errors, reset, progress } = useForm({
+        id:persona.user_id,
+        identificacion: persona.identificacion,
+        tipoidentificacion_id:persona.tipoidentificacion_id,
+        telefonomovil: persona.telefonomovil,
+        fechanacimiento: persona.fechanacimiento,
+        nombre: persona.nombre,
+        segundonombre: persona.segundonombre,
+        apellido: persona.apellido,
+        segundoapellido: persona.segundoapellido,
+        sexo_id: persona.sexo_id,
+        name: persona.user_name,
+        email: persona.user_email,
     });
 
-    useEffect(() => {
-        return () => {
-            reset('password', 'password_confirmation');
-        };
-    }, []);
+     const submit = async (e) => {
+        e.preventDefault()
 
+        await axios.put(route('usuario.update', data.id),{
+            identificacion: data.identificacion,
+            tipoidentificacion_id: data.tipoidentificacion_id,
+            telefonomovil: data.telefonomovil,
+            fechanacimiento: data.fechanacimiento,
+            nombre: data.nombre,
+            segundonombre: data.segundonombre,
+            apellido: data.apellido,
+            segundoapellido: data.segundoapellido,
+            sexo_id: data.sexo_id,
+            name: data.name,
+            email: data.email,})
+    };
 
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
     };
-
-    const submit = (e) => {
-        e.preventDefault();
-        console.log(data);
-        post(route('register'));
-    };
-
     
     return (
-        <GuestLayout>
-            <Head title="Register"/>
+        
+        <AuthenticatedLayout auth={auth}
+        header={
+            <nav className="flex" aria-label="Breadcrumb">
+                <ol className="inline-flex items-center space-x-1 md:space-x-3">
+                    <li className="inline-flex items-center">
+                        <Link href={route('generales')} className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                            Generales
+                        </Link>
+                    </li>
+                    <li aria-current="page">
+                        <div className="flex items-center">
+                            <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
+                            <Link href={route('usuario.show', persona.user_id)} className="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
+                                Cuenta
+                            </Link>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        }>
+             <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+            <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <Head title="Register" />
+   
 
             <form onSubmit={submit}>
 
@@ -58,7 +94,7 @@ export default function Register(tipos) {
                         required
                     >
                   <option value="-----">----</option>
-                  {tipos.tipo_documentos.map(documento => <option  key={documento.id} value={documento.id}>{documento.name}</option>)}
+                  {tipo_documentos.map(documento => <option  key={documento.id} value={documento.id}>{documento.name}</option>)}
                   </select>
                     <InputError message={errors.tipoidentificacion_id} className="mt-2" />
                 </div> 
@@ -136,7 +172,7 @@ export default function Register(tipos) {
                         required
                     >
                   <option value=""></option>
-                  {tipos.tipo_sexos.map(sexo => <option  key={sexo.id} value={sexo.id}>{sexo.name}</option>)}
+                  {tipo_sexos.map(sexo => <option  key={sexo.id} value={sexo.id}>{sexo.name}</option>)}
                   </select>
                     <InputError message={errors.sexo_id} className="mt-2" />
                 </div>
@@ -185,9 +221,8 @@ export default function Register(tipos) {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         handleChange={onHandleChange}
-                        required
+                        // required
                     />
-
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
@@ -200,22 +235,22 @@ export default function Register(tipos) {
                         value={data.password_confirmation}
                         className="mt-1 block w-full"
                         handleChange={onHandleChange}
-                        required
+                        // required
                     />
-
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <Link href={route('login')} className="underline text-sm text-gray-600 hover:text-gray-900">
-                        Already registered?
-                    </Link>
 
                     <PrimaryButton className="ml-4" processing={processing}>
-                        Register
+                        Guardar
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+            </div>
+            </div>
+                
+            {/* </GuestLayout> */}
+        </AuthenticatedLayout>
     );
 }
