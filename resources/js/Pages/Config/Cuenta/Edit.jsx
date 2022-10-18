@@ -8,6 +8,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import GuestLayout from '@/Layouts/GuestLayout';
 import TextInput from '@/Components/TextInput';
 import axios from "axios";
+import '../../../../css/user.css'
+
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faGears,
@@ -15,8 +18,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 
-export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
+export default function Edit({ auth, persona, tipo_documentos, tipo_sexos, tipo_estados }) {
+    // const navigate = useNavigate() 
 
+    const [disabled, setDisabled] = useState(false);
+    
     const { data, setData, put, processing, errors, reset, progress } = useForm({
         id:persona.user_id,
         identificacion: persona.identificacion,
@@ -30,7 +36,10 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
         sexo_id: persona.sexo_id,
         name: persona.user_name,
         email: persona.user_email,
+        estado_id: persona.user_estadoid,
     });
+
+    
 
      const submit = async (e) => {
         e.preventDefault()
@@ -46,8 +55,11 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
             segundoapellido: data.segundoapellido,
             sexo_id: data.sexo_id,
             name: data.name,
-            email: data.email,})
-    };
+            email: data.email,
+            estado_id: data.estado_id,})
+        };
+
+
 
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
@@ -76,13 +88,13 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
             </nav>
         }>
              <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-            <Head title="Register" />
-   
+            <div className="w-3/4 mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <Head title="Editar Usuario" />
 
             <form onSubmit={submit}>
-
-                <div>
+            <label className='mt-4'> <b> Datos Personales </b></label>
+                <div className='columnas mt-4 sm:justify-center items-center'>
+                <div className='columna mr-2'>
                     <InputLabel forInput="tipoidentificacion_id" value="Tipo Identificacion" />
                     <select
                         name="tipoidentificacion_id"
@@ -98,9 +110,7 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                   </select>
                     <InputError message={errors.tipoidentificacion_id} className="mt-2" />
                 </div> 
-                
-
-                <div>
+                <div className='columna mr-2'>
                     <InputLabel forInput="identificacion" value="Identificacion" />
                     <TextInput
                         type="number"
@@ -114,10 +124,8 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                     />
                     <InputError message={errors.identificacion} className="mt-2" />
                 </div>
-
-                 <div>
-                    <InputLabel forInput="nombre" value="Nombre" />
-
+                <div className='columna'>
+                    <InputLabel  forInput="nombre" value="Nombre" />
                     <TextInput
                         type="text"
                         name="nombre"
@@ -128,27 +136,65 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                         handleChange={onHandleChange}
                         required
                     />
-
                     <InputError message={errors.nombre} className="mt-2" />
                 </div>
-
-                <div>
+                </div>
+                <div className='columnas mt-4 sm:justify-center items-center'>
+                <div className='columna'>
+                    <InputLabel forInput="segundonombre" value="Segundo Nombre" />
+                    <TextInput
+                        type="text"
+                        name="segundonombre"
+                        value={data.segundonombre}
+                        className="mt-1 block w-full"
+                        autoComplete="apellido"
+                        handleChange={onHandleChange}
+                    />
+                    <InputError message={errors.segundonombre} className="mt-2" />
+                </div>
+                <div className='columna ml-2'>
                     <InputLabel forInput="apellido" value="Apellido" />
-
                     <TextInput
                         type="text"
                         name="apellido"
                         value={data.apellido}
                         className="mt-1 block w-full"
                         autoComplete="apellido"
-                        // isFocused={true}
                         handleChange={onHandleChange}
                         required
                     />
                     <InputError message={errors.name} className="mt-2" />
                 </div>
-
-                <div>
+                <div className='columna ml-2'>
+                    <InputLabel forInput="segundoapellido" value="Segundo Apellido" />
+                    <TextInput
+                        type="text"
+                        name="segundoapellido"
+                        value={data.segundoapellido}
+                        className="mt-1 block w-full"
+                        autoComplete="apellido"
+                        handleChange={onHandleChange}
+                    />
+                    <InputError message={errors.name} className="mt-2" />
+                </div>
+                </div>
+                <div className='columnas mt-4 sm:justify-center items-center'>
+                <div className='columna mr-2'>
+                    <InputLabel forInput="telefonomovil" value="Telefono Movil" />
+                    <TextInput
+                        type="number"
+                        name="telefonomovil"
+                        value={data.telefonomovil}
+                        className="mt-1 block w-full"
+                        autoComplete="identificacion"
+                        // isFocused={true}
+                        handleChange={onHandleChange}
+                        required
+                    />
+                    <InputError message={errors.identificacion} className="mt-2" />
+                </div>
+                <div className='columna mr-2'>
+                <div >
                      <InputLabel forInput="fechanacimiento" value="Fecha de nacimiento" />
                      <input type="date"
                      name="fechanacimiento"
@@ -159,7 +205,10 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                      onChange={(e) => onHandleChange(e)}
                      required
                      ></input>
+
                 </div>
+                </div>
+                <div className='columna'>
                 <div>
                     <InputLabel forInput="sexo_id" value="Sexo" />
                     <select
@@ -176,9 +225,13 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                   </select>
                     <InputError message={errors.sexo_id} className="mt-2" />
                 </div>
-
-                <div>
-                    <InputLabel forInput="name" value="Name" />
+                </div>
+                </div>
+                <br/>
+                <label className='mt-4'> <b> Datos Usuario </b></label>
+                <div className='columnas mt-4 sm:justify-center items-center'> 
+                <div className='columna mr-2 '>
+                    <InputLabel forInput="name" value="Usuario" />
 
                     <TextInput
                         type="text"
@@ -193,11 +246,8 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
 
                     <InputError message={errors.name} className="mt-2" />
                 </div>
-
-
-                <div className="mt-4">
+                <div className="columna mr-2 ">
                     <InputLabel forInput="email" value="Email" />
-
                     <TextInput
                         type="email"
                         name="email"
@@ -207,11 +257,28 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                         handleChange={onHandleChange}
                         required
                     />
-
                     <InputError message={errors.email} className="mt-2" />
                 </div>
-
-                <div className="mt-4">
+                <div className='columna'>
+                    <InputLabel forInput="estado_id" value="Estado" />
+                    <select
+                        name="estado_id"
+                        id="estado_id"
+                        value={data.estado_id}
+                        className="mt-1 block w-full"
+                        autoComplete="estado_id"
+                        onChange={(e) => onHandleChange(e)}
+                        required
+                    >
+                  <option value="-----">----</option>
+                  {tipo_estados.map(estado => <option  key={estado.id} value={estado.id}>{estado.name}</option>)}
+                  </select>
+                    <InputError message={errors.estado_id} className="mt-2" />
+                </div> 
+                </div>
+                
+                {/* <div className='columnas mt-4'> 
+                <div className='columna mr-2'>
                     <InputLabel forInput="password" value="Password" />
 
                     <TextInput
@@ -226,9 +293,8 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                     <InputError message={errors.password} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                <div className="columna">
                     <InputLabel forInput="password_confirmation" value="Confirm Password" />
-
                     <TextInput
                         type="password"
                         name="password_confirmation"
@@ -239,6 +305,7 @@ export default function Edit({ auth, persona, tipo_documentos, tipo_sexos }) {
                     />
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
+                </div> */}
 
                 <div className="flex items-center justify-end mt-4">
 

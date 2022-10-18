@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->unsignedBigInteger('persona_id')->unique();
+            $table->unsignedBigInteger('estado_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -26,6 +27,11 @@ return new class extends Migration
 
             $table->foreign('persona_id')->references('id')
                                         ->on('persons')
+                                        ->onDelete('cascade')
+                                        ->onUpdate('cascade'); 
+
+            $table->foreign('estado_id')->references('id')
+                                        ->on('masters')
                                         ->onDelete('cascade')
                                         ->onUpdate('cascade'); 
         });

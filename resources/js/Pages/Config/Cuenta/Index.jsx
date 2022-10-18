@@ -11,7 +11,6 @@ import { Head } from '@inertiajs/inertia-react';
 
 export default function Index({ auth, usuario }) {
 
-    // console.log(usuario);
     return (
         <AuthenticatedLayout auth={auth}
         header={
@@ -35,7 +34,6 @@ export default function Index({ auth, usuario }) {
         }>
             <Head title="Cuenta" />
             <div className="py-12">
-                {/* <di> usuario</di> */}
                 <div>
                     <button href={route('usuario.edit', auth.user.id)} method="get" as="button"> Editar </button>
                 </div>

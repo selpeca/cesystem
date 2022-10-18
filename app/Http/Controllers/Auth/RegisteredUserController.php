@@ -24,11 +24,11 @@ class RegisteredUserController extends Controller
 
         $tipo_documentos = Master::where('parent_id', 1)->get();
         $tipo_sexos      = Master::where('parent_id', 8)->get();
-
         
+
         return Inertia::render('Auth/Register', [
             'tipo_documentos' => $tipo_documentos,
-            'tipo_sexos' => $tipo_sexos
+            'tipo_sexos' => $tipo_sexos,
         ]);
     }
 
@@ -64,6 +64,7 @@ class RegisteredUserController extends Controller
         $person->user()->create([
             'name' => $request->name,
             'email' => $request->email,
+            'estado_id' => 12,
             'password' => Hash::make($request->password),
         ]);
 
