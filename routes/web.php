@@ -33,7 +33,7 @@ Route::withoutMiddleware(['auth', 'verified'])->group(function () {
     Route::prefix('generales')->group(function () {
         Route::resource('maestra', MasterController::class)->only(['index', 'store']);
 
-        Route::resource('usuario', UserController::class)->only(['index', 'show']);
+        Route::resource('usuario', UserController::class);
     });
 });
 

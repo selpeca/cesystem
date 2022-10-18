@@ -18,6 +18,7 @@ class Person extends Model
 		'sexo_id' => 'required',
     ];
 
+    protected $table = "persons";
 
     protected $casts = [
 		'fechanacimiento'  => 'date:Y-m-d',

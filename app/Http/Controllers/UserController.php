@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
+use App\Models\{User, Person, Master};
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\{Hash,Auth,Validator,DB,Mail};
 
 
 class UserController extends Controller
@@ -62,7 +63,32 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+
+        $sql = "SELECT DISTINCTROW
+        p.*,
+        u.`name` as 'user_name',
+        u.email as 'user_email',
+        u.persona_id as 'user_personaid',
+        u.estado_id as 'user_estadoid',
+        u.id as 'user_id'
+        FROM  users u
+        INNER JOIN  persons p ON (u.persona_id = p.id)
+        INNER JOIN  masters ti ON (p.tipoidentificacion_id = ti.id)
+        INNER JOIN  masters sx ON (p.sexo_id = sx.id)
+        WHERE u.id = '$id'";
+
+        $persona =  DB::select($sql);
+        $tipo_documentos = Master::where('parent_id', 1)->get();
+        $tipo_sexos      = Master::where('parent_id', 8)->get();
+        $tipo_estados    = Master::where('parent_id', 11)->get();
+
+        // return $user;
+        return Inertia::render('Config/Cuenta/Edit', [
+            'persona' => $persona[0],
+            'tipo_documentos' => $tipo_documentos,
+            'tipo_sexos' => $tipo_sexos,
+            'tipo_estados' => $tipo_estados
+        ]);
     }
 
     /**
@@ -74,7 +100,37 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            
+        ]);
+
+        $user =  User::find($id);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'estado_id' => $request->estado_id,
+        ]);
+
+        $user->persona()->update([
+            'identificacion' => $request->identificacion,
+            'tipoidentificacion_id' => $request->tipoidentificacion_id,
+            'nombre' => $request->nombre,
+            'segundonombre' => $request->segundonombre,
+            'apellido' => $request->apellido,
+            'segundoapellido' => $request->segundoapellido,
+            'email' => $request->email,
+            'telefonomovil' => $request->telefonomovil,
+            'fechanacimiento' => $request->fechanacimiento,
+            'sexo_id' => $request->sexo_id,
+        ]);
+
+        return Inertia::render('Config/Cuenta/Index', [
+            'usuario' => $user,
+        ]);
     }
 
     /**

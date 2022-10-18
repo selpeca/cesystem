@@ -9,24 +9,25 @@ import Select from 'react-select';
 
 export default function Register(tipos) {
 
-    // console.log(tipo_documentos);
-    // console.log(tipos.tipo_documentos);
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
-        tipo_identificacion: '',
+        tipoidentificacion_id: '',
+        identificacion: '',
+        nombre: '',
+        apellido: '',
+        fechanacimiento: '',
+        sexo_id: '',
     });
-
-    
-    const [date, setDate] = useState();
 
     useEffect(() => {
         return () => {
             reset('password', 'password_confirmation');
         };
     }, []);
+
 
     const onHandleChange = (event) => {
         setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
@@ -38,35 +39,28 @@ export default function Register(tipos) {
         post(route('register'));
     };
 
-    const options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' }
-      ]
-
     
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Register"/>
 
             <form onSubmit={submit}>
-            {/* <Select value={data.tipo_identificacion} options={options} /> */}
 
                 <div>
-                    <InputLabel forInput="tipo_identificacion" value="Tipo Identificacion" />
+                    <InputLabel forInput="tipoidentificacion_id" value="Tipo Identificacion" />
                     <select
-                        name="tipo_identificacion"
-                        id="tipo_identificacion"
-                        value={data.tipo_identificacion}
+                        name="tipoidentificacion_id"
+                        id="tipoidentificacion_id"
+                        value={data.tipoidentificacion_id}
                         className="mt-1 block w-full"
-                        autoComplete="tipo_identificacion"
+                        autoComplete="tipoidentificacion_id"
                         onChange={(e) => onHandleChange(e)}
                         required
                     >
                   <option value="-----">----</option>
                   {tipos.tipo_documentos.map(documento => <option  key={documento.id} value={documento.id}>{documento.name}</option>)}
                   </select>
-                    <InputError message={errors.tipo_identificacion} className="mt-2" />
+                    <InputError message={errors.tipoidentificacion_id} className="mt-2" />
                 </div> 
                 
 
@@ -80,7 +74,7 @@ export default function Register(tipos) {
                         autoComplete="identificacion"
                         // isFocused={true}
                         handleChange={onHandleChange}
-                        
+                        required
                     />
                     <InputError message={errors.identificacion} className="mt-2" />
                 </div>
@@ -96,7 +90,7 @@ export default function Register(tipos) {
                         autoComplete="nombre"
                         // isFocused={true}
                         handleChange={onHandleChange}
-                        
+                        required
                     />
 
                     <InputError message={errors.nombre} className="mt-2" />
@@ -113,24 +107,39 @@ export default function Register(tipos) {
                         autoComplete="apellido"
                         // isFocused={true}
                         handleChange={onHandleChange}
-                       
+                        required
                     />
-
                     <InputError message={errors.name} className="mt-2" />
                 </div>
 
                 <div>
-                     <InputLabel forInput="fecha_nacimiento" value="Fecha de nacimiento" />
+                     <InputLabel forInput="fechanacimiento" value="Fecha de nacimiento" />
                      <input type="date"
-                     name="fecha_nacimiento"
+                     name="fechanacimiento"
+                     id="fechanacimiento"
                      className="mt-1 block w-full"
-                     autoComplete="fecha_nacimiento"
-                     value={data.fecha}
-                     handleChange={onHandleChange}
-                    
+                     autoComplete="fechanacimiento"
+                     value={data.fechanacimiento}
+                     onChange={(e) => onHandleChange(e)}
+                     required
                      ></input>
                 </div>
-
+                <div>
+                    <InputLabel forInput="sexo_id" value="Sexo" />
+                    <select
+                        name="sexo_id"
+                        id="sexo_id"
+                        value={data.sexo_id}
+                        className="mt-1 block w-full"
+                        autoComplete="sexo_id"
+                        onChange={(e) => onHandleChange(e)}
+                        required
+                    >
+                  <option value=""></option>
+                  {tipos.tipo_sexos.map(sexo => <option  key={sexo.id} value={sexo.id}>{sexo.name}</option>)}
+                  </select>
+                    <InputError message={errors.sexo_id} className="mt-2" />
+                </div>
 
                 <div>
                     <InputLabel forInput="name" value="Name" />
@@ -143,30 +152,12 @@ export default function Register(tipos) {
                         autoComplete="name"
                         isFocused={true}
                         handleChange={onHandleChange}
-                    
+                        required
                     />
 
                     <InputError message={errors.name} className="mt-2" />
                 </div>
 
-                <div>
-                    <InputLabel forInput="tipo_sexo" value="Sexo" />
-                     {/* <Select options={options} />   */}
-                    <select
-                        name="tipo_sexo"
-                        id="tipo_sexo"
-                        value={data.tipo_identificacion}
-                        className="mt-1 block w-full"
-                        autoComplete="identificacion"
-                        // isFocused={true}
-                        // handleChange={onHandleChange}
-                        
-                    >
-                  <option value="-----">----</option>
-                  {tipos.tipo_sexos.map(profile => <option  key={profile.id} value={profile.id}>{profile.name}</option>)}
-                  </select>
-                    <InputError message={errors.tipo_identificacion} className="mt-2" />
-                </div>
 
                 <div className="mt-4">
                     <InputLabel forInput="email" value="Email" />
@@ -178,7 +169,7 @@ export default function Register(tipos) {
                         className="mt-1 block w-full"
                         autoComplete="username"
                         handleChange={onHandleChange}
-                       
+                        required
                     />
 
                     <InputError message={errors.email} className="mt-2" />
@@ -194,7 +185,7 @@ export default function Register(tipos) {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         handleChange={onHandleChange}
-                        
+                        required
                     />
 
                     <InputError message={errors.password} className="mt-2" />
@@ -209,7 +200,7 @@ export default function Register(tipos) {
                         value={data.password_confirmation}
                         className="mt-1 block w-full"
                         handleChange={onHandleChange}
-                       
+                        required
                     />
 
                     <InputError message={errors.password_confirmation} className="mt-2" />
