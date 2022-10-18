@@ -7,6 +7,7 @@ import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SelectControl from '@/Components/SelectControl';
+import Select from 'react-select'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
@@ -235,16 +236,16 @@ export default function Index({ auth, padres }) {
                             </div>
                             <div>
                                 <InputLabel forInput="hierarchy_id" value="Jerarquia" />
-                                <SelectControl 
+                                <Select 
+                                className="basic-single"
+                                classNamePrefix="select"
+                                isSearchable={true}
                                 name="hierarchy_id"
-                                id="hierarchy_id"
-                                handleChange={onHandleChange}
-                                value={data.key}
                                 options={
                                     [
-                                        { value:1, text:"primero"},
-                                        { value:2, text:"segundo"},
-                                        { value:3, text:"tercero"},
+                                        { value:1, label:"primero"},
+                                        { value:2, label:"segundo"},
+                                        { value:3, label:"tercero"},
                                     ]
                                 }
                                 />
