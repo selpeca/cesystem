@@ -133,7 +133,7 @@ export default function Register(tipos) {
                         className="mt-1 block w-full"
                         autoComplete="sexo_id"
                         onChange={(e) => onHandleChange(e)}
-                        required
+                        // required
                     >
                   <option value=""></option>
                   {tipos.tipo_sexos.map(sexo => <option  key={sexo.id} value={sexo.id}>{sexo.name}</option>)}
