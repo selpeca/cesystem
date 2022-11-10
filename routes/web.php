@@ -31,7 +31,7 @@ Route::withoutMiddleware(['auth', 'verified'])->group(function () {
 
     Route::get('/generales', function () {return Inertia::render('Config/Index');})->name('generales');
     Route::prefix('generales')->group(function () {
-        Route::resource('maestra', MasterController::class)->only(['index', 'store']);
+        Route::resource('maestra', MasterController::class);
 
         Route::resource('usuario', UserController::class);
     });

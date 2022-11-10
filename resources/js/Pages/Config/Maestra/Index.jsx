@@ -2,70 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { Link, Head, useForm } from '@inertiajs/inertia-react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Modal from '@/Components/Modal';
-import TextInput from '@/Components/TextInput';
-import InputLabel from '@/Components/InputLabel';
-import InputError from '@/Components/InputError';
-import PrimaryButton from '@/Components/PrimaryButton';
-import SelectControl from '@/Components/SelectControl';
-import Select from 'react-select'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
     faPlus,
     faPen
 } from '@fortawesome/free-solid-svg-icons'
+import Form from './Form';
 
 
 export default function Index({ auth, padres }) {
     
     const [tipos, setTipos] = useState([]);
     const [parent, setParent] = useState(0);
+    const [datos, setDatos] = useState({});
     const [showModal, setShowModal] = useState(false)
     const [isLoading, setIsLoading] = useState(false);
-    
-    const { data, setData, post, processing, errors, reset, progress } = useForm({
-        id:null,
-        key:null,
-        name:'',
-        parent_id: parent,
-        value:'',
-        hierarchy_id:'',
-        hierarchy_second_id:'',
-        description:'',
-        is_active:''
-    });
 
-    useEffect(() => {
-        if (parent === 0) return;
-        verListado(parent)
-    }, [parent])
-
-    const onHandleChange = (event) => {
-        setData(event.target.name, event.target.value);
-    };
-
-    const submit = (e) => {
-        e.preventDefault();
-        console.log(data);
-        // post(route('api.maestra.store'),{
-        //     preserveScroll: true,
-        //     onSuccess: () => setShowModal(false) && verListado(parent),
-        // });
-    };
-
-    useEffect(() => {
-        if (!showModal) reset()
-    }, [showModal])
-    
     const verListado = (id) =>{
         setIsLoading(true);
-        fetch(route('api.maestra.index',id))
+        fetch(route('api.maestra.show',id))
         .then(response => response.json())
         .then(datos => {
             setTipos(datos);
             setIsLoading(false);
         });
     }
+
+    useEffect(() => {
+        if (parent === 0) return;
+        verListado(parent)
+    }, [parent])
 
     return (
         <AuthenticatedLayout auth={auth}
@@ -98,7 +65,20 @@ export default function Index({ auth, padres }) {
                                     <FontAwesomeIcon 
                                     icon={faPlus} 
                                     className='text-gray-700 cursor-pointer'
-                                    onClick={() => setShowModal(true)}
+                                    onClick={() => {
+                                        setDatos({
+                                            id:undefined,
+                                            key:undefined,
+                                            name:'',
+                                            parent_id: parent,
+                                            value:'',
+                                            hierarchy_id:'',
+                                            hierarchy_second_id:'',
+                                            description:'',
+                                            is_active:true
+                                        });
+                                        setShowModal(true)
+                                    }}
                                     />
                                 </div>
                                 {
@@ -109,10 +89,29 @@ export default function Index({ auth, padres }) {
                                                 onClick={e => setParent(padre.id)}
                                                 className={
                                                     parent === padre.id ?
-                                                    "flex justify-between items-center pt-4 cursor-pointer font-bold":
-                                                    "flex justify-between items-center pt-4 hover:text-gray-800 cursor-pointer hover:font-semibold"
+                                                    "group flex justify-between items-center pt-4 cursor-pointer font-bold":
+                                                    "group flex justify-between items-center pt-4 hover:text-gray-800 cursor-pointer hover:font-semibold"
                                                 }>
-                                                <div>{padre.name}</div>
+                                                {padre.name}
+                                                <FontAwesomeIcon 
+                                                    icon={faPen} 
+                                                    className='text-gray-400 cursor-pointer text-sm group-hover:opacity-100 transition-opacity ease-in duration-100 opacity-0'
+                                                    onClick={() => {
+                                                            setDatos({
+                                                                id: padre.id,
+                                                                key: padre.key,
+                                                                name: padre.name,
+                                                                value: padre.value,
+                                                                parent_id: padre.parent_id,
+                                                                hierarchy_id: padre.hierarchy_id,
+                                                                hierarchy_second_id: padre.hierarchy_second_id,
+                                                                description: padre.description,
+                                                                is_active: padre.is_active,
+                                                            })
+                                                            setShowModal(true);
+                                                        }
+                                                    }
+                                                />
                                             </div>
                                         )
                                     })
@@ -162,11 +161,12 @@ export default function Index({ auth, padres }) {
                                                                 icon={faPen} 
                                                                 className='text-gray-700 cursor-pointer'
                                                                 onClick={() => {
-                                                                        setData({
+                                                                        setDatos({
                                                                             id: item.id,
                                                                             key: item.key,
                                                                             name: item.name,
                                                                             value: item.value,
+                                                                            parent_id: item.parent_id,
                                                                             hierarchy_id: item.hierarchy_id,
                                                                             hierarchy_second_id: item.hierarchy_second_id,
                                                                             description: item.description,
@@ -194,82 +194,13 @@ export default function Index({ auth, padres }) {
                 title="Agregar categoría"
                 width="7xl"
                 >
-                    <form className='p-4' onSubmit={submit}>
-                        <div className="grid gap-6 mb-6 md:grid-cols-1">
-                            <div>
-                                <InputLabel forInput="parent_id" value="Padre" />
-                                <SelectControl
-                                    name="parent_id"
-                                    value={parent}
-                                    className="mt-1 block w-full"
-                                    isDisabled={true}
-                                    handleChange={onHandleChange}
-                                    options={padres.map((padre) => (
-                                            {
-                                                value : padre.id,
-                                                text : padre.name,
-                                            }
-                                        ))
-                                    }
-                                />
-                            </div>
-                            <div>
-                                <InputLabel forInput="name" value="Nombre" />
-                                <TextInput
-                                    type="text"
-                                    name="name"
-                                    value={data.name}
-                                    className="mt-1 block w-full"
-                                    isFocused={true}
-                                    handleChange={onHandleChange}
-                                />
-                            </div>
-                            <div>
-                                <InputLabel forInput="key" value="Clave" />
-                                <TextInput
-                                    type="text"
-                                    name="key"
-                                    value={data.key}
-                                    className="mt-1 block w-full"
-                                    handleChange={onHandleChange}
-                                />
-                            </div>
-                            <div>
-                                <InputLabel forInput="hierarchy_id" value="Jerarquia" />
-                                <Select 
-                                className="basic-single"
-                                classNamePrefix="select"
-                                isSearchable={true}
-                                name="hierarchy_id"
-                                options={
-                                    [
-                                        { value:1, label:"primero"},
-                                        { value:2, label:"segundo"},
-                                        { value:3, label:"tercero"},
-                                    ]
-                                }
-                                />
-
-                            </div>
-                            {progress && (
-                                <progress value={progress.percentage} max="100">
-                                    {progress.percentage}%
-                                </progress>
-                            )}
-                        </div>
-                        <div className="flex items-center p-6 space-x-2 rounded-b border-t border-gray-200">
-                            <PrimaryButton 
-                                processing={processing}
-                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-                            >
-                                Aceptar
-                            </PrimaryButton>
-                            <button 
-                                type="button" 
-                                className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
-                                onClick={() => setShowModal(false)}>Cancelar</button>
-                        </div>
-                    </form>
+                    <Form 
+                    verListado={verListado} 
+                    padres={padres} 
+                    parent={parent} 
+                    datos={datos}
+                    setShowModal={setShowModal}
+                />
                 </Modal>
             </div>
         </AuthenticatedLayout>

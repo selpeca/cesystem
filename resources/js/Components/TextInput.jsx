@@ -22,6 +22,7 @@ export default function TextInput({
         <div className="flex flex-col items-start">
             <input
                 type={type}
+                id={name}
                 name={name}
                 value={value}
                 className={

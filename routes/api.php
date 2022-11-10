@@ -15,6 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 Route::withoutMiddleware(['auth', 'verified'])->group(function () {
     Route::get('/user', function (Request $request) {return $request->user();})->name('api.user');
-    Route::get('/maestra/{parent_id}','App\Http\Controllers\Api\MasterController@index')->name('api.maestra.index');
-    Route::post('/maestra','App\Http\Controllers\Api\MasterController@store')->name('api.maestra.store');
+    Route::apiResource('/maestra','App\Http\Controllers\Api\MasterController', ['as' => 'api']);
+    #Route::put('/maestra/{id}','App\Http\Controllers\Api\MasterController@update')->name('api.maestra.update');
 });

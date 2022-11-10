@@ -27,15 +27,12 @@ class MasterController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'string|max:255',
-            'value' => 'string|max:255',
-            'hierarchy_id' => 'integer',
-            'hierarchy_second_id' => 'integer',
-            'description' => 'string',
-            'is_active' => 'boolean',
+            'name' => ['required','max:255'],
+            'value' => ['max:255'],
+            'is_active' => ['boolean'],
         ]);
         $maestra = Master::create($validated);
-        return response()->json($maestra);
+        return Redirect::back()->with('success', 'Organization created.');
     }
 
     /**
@@ -46,7 +43,7 @@ class MasterController extends Controller
      */
     public function show($id)
     {
-        //
+        return Master::where('parent_id', $id)->latest()->get();
     }
 
     /**
@@ -58,7 +55,14 @@ class MasterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required','max:255'],
+            'value' => ['max:255'],
+            'is_active' => ['boolean'],
+        ]);
+        $maestra = Master::find($id);
+        $maestra->update($validated);
+        return Redirect::back()->with('success', 'Organization created.');
     }
 
     /**
